@@ -1,0 +1,41 @@
+.navbar-container {
+    height: 70px;
+    width: 100vw;
+    background-color: teal;
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar-group-left {
+    display: flex;
+    height: 100%;
+}
+
+.navbar-group-right {
+    display: flex;
+    height: 100%;
+}
+
+.navbar-link {
+    padding: 10px;
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.navbar-link:hover {
+    background-color: navy;
+}
+
+.navbar-call-to-action {
+    color: white;
+    background-color: red;
+}
+
+.navbar-call-to-action:hover {
+    background-color: maroon;
+}

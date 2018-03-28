@@ -1,0 +1,14 @@
+.footer-positioner {
+    position: fixed;
+    bottom: 0;
+}
+
+.footer-container {
+    width: 100vw;
+    border: 3px solid navy;
+    background-color: midnightblue;
+}
+
+.footer-text {
+    color: skyblue;
+}
