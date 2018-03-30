@@ -1,40 +1,12 @@
 import React, { Component } from "react";
 import "./AuthForm.css";
 
-export default class SignUpForm extends Component {
+export default class LoginForm extends Component {
   constructor() {
     super();
     this.state = {
-      fields: [
-        "name",
-        "country",
-        "age",
-        "emailAddress",
-        "password",
-        "confirmPassword"
-      ],
+      fields: ["emailAddress", "password"],
       fieldDetails: [
-        {
-          fieldName: "name",
-          label: "Name",
-          type: "text",
-          placeholderMessage: "Enter your name.",
-          requiredErrorMessage: "Please enter your name."
-        },
-        {
-          fieldName: "country",
-          label: "Country",
-          type: "text",
-          placeholderMessage: "Enter your country.",
-          requiredErrorMessage: "Please enter your country."
-        },
-        {
-          fieldName: "age",
-          label: "Age",
-          type: "number",
-          placeholderMessage: "Enter your age.",
-          requiredErrorMessage: "Please enter your age."
-        },
         {
           fieldName: "emailAddress",
           label: "Email Address",
@@ -48,14 +20,6 @@ export default class SignUpForm extends Component {
           type: "password",
           placeholderMessage: "Enter your password.",
           requiredErrorMessage: "Please enter your password.",
-          passwordMatchErrorMessage: "Passwords do not match."
-        },
-        {
-          fieldName: "confirmPassword",
-          label: "Confirm Password",
-          type: "password",
-          placeholderMessage: "Enter your password again.",
-          requiredErrorMessage: "Please confirm your password.",
           passwordMatchErrorMessage: "Passwords do not match."
         }
       ],
@@ -170,13 +134,13 @@ export default class SignUpForm extends Component {
       <div className="SignUpForm-positioner">
         <div className="SignUpForm-container">
           <div className="SignUpForm-header">
-            <h3 className="SignUpForm-title">Sign Up</h3>
+            <h3 className="SignUpForm-title">Login</h3>
           </div>
           <div className="SignUpForm-body">
             <form className="SignUpForm" onSubmit={this.handleSubmit}>
               {formBodyJSX}
               <button type="submit" className="SignUpForm-button">
-                Sign Up
+                Log In
               </button>
             </form>
           </div>

@@ -6,6 +6,7 @@ import { Route, Redirect, Switch } from "react-router-dom";
 /*---------Pages--------*/
 import HomePage from "./pages/HomePage/HomePage";
 import AuthPage from "./pages/AuthPage/AuthPage";
+import LoginPage from "./pages/AuthPage/LoginPage";
 import Dashboard from "./pages/Dashboard/Dashboard";
 
 /*---------Components--------*/
@@ -35,7 +36,7 @@ class App extends Component {
         <div className="Page-Wrapper">
           <Switch>
             <Route path="/" exact component={HomePage} />
-            <Route path="/auth" exact component={() => <AuthPage />} />
+            <Route path="/auth" exact component={() => <LoginPage />} />
             <Route path="/sign-up" exact component={() => <AuthPage />} />
             <Route
               path="/dashboard"
