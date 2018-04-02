@@ -18,21 +18,42 @@ export default class Navbar extends Component {
           to: "/"
         }
       ],
-      rightNavItems: [
+      rightNavItems: []
+    };
+  }
+
+  componentWillMount() {
+    const { isAuthenticated } = this.props;
+
+    let rightNavItems;
+
+    if (isAuthenticated === false) {
+      rightNavItems = [
         {
-          text: "Authentication",
-          to: "/auth"
-        },
-        {
-          text: "Dashboard",
-          to: "/dashboard"
+          text: "Login",
+          to: "/login"
         },
         {
           text: "Sign Up",
           to: "/sign-up"
         }
-      ]
-    };
+      ];
+    } else {
+      rightNavItems = [
+        {
+          text: "Dashboard",
+          to: "/dashboard"
+        },
+        {
+          text: "Sign Out",
+          to: "/sign-out"
+        }
+      ];
+    }
+
+    this.setState({
+      rightNavItems: rightNavItems
+    });
   }
 
   render() {

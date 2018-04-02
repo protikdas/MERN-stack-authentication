@@ -66,3 +66,15 @@
     color: greenyellow;
     margin: 10px 0 20px 0;
 }
+
+.SignUpForm-button:focus {
+    outline: none;
+}
+
+.button-disabled {
+    opacity: 0.5;
+}
+
+.button-disabled:hover {
+    cursor: not-allowed;
+}

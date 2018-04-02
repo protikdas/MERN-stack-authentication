@@ -6,7 +6,6 @@ import { Route, Redirect, Switch } from "react-router-dom";
 /*---------Pages--------*/
 import HomePage from "./pages/HomePage/HomePage";
 import AuthPage from "./pages/AuthPage/AuthPage";
-import LoginPage from "./pages/AuthPage/LoginPage";
 import Dashboard from "./pages/Dashboard/Dashboard";
 
 /*---------Components--------*/
@@ -18,7 +17,7 @@ class App extends Component {
     super();
 
     this.state = {
-      isAuthenticated: true,
+      isAuthenticated: false,
       user: {
         emailAddress: "protikdas@hotmail.com",
         name: "Protik Das",
@@ -32,12 +31,25 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Navbar />
         <div className="Page-Wrapper">
           <Switch>
-            <Route path="/" exact component={HomePage} />
-            <Route path="/auth" exact component={() => <LoginPage />} />
-            <Route path="/sign-up" exact component={() => <AuthPage />} />
+            <Route
+              path="/"
+              exact
+              component={() => {
+                return <HomePage />;
+              }}
+            />
+            <Route
+              path="/login"
+              exact
+              component={props => <AuthPage match={props.match} />}
+            />
+            <Route
+              path="/sign-up"
+              exact
+              component={props => <AuthPage match={props.match} />}
+            />
             <Route
               path="/dashboard"
               exact
@@ -45,12 +57,13 @@ class App extends Component {
                 isAuthenticated ? (
                   <Dashboard user={user} />
                 ) : (
-                  <Redirect to="/auth" />
+                  <Redirect to="/login" />
                 )
               }
             />
           </Switch>
         </div>
+        <Navbar isAuthenticated={isAuthenticated} />
         <Footer />
       </div>
     );

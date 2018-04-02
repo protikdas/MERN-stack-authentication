@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import "./AuthForm.css";
 
+/* <------------API------------> */
+import api from "../../api";
+
 export default class SignUpForm extends Component {
   constructor() {
     super();
@@ -60,13 +63,14 @@ export default class SignUpForm extends Component {
         }
       ],
       user: {},
-      errors: {}
+      errors: {},
+      submitDisabled: true,
+      submitAttempted: false
     };
   }
 
   componentWillMount() {
-    let user = {},
-      errors = {};
+    let { user, errors } = this.state;
     const { fields } = this.state;
     for (let i = 0; i < fields.length; i++) {
       let field = fields[i];
@@ -85,37 +89,24 @@ export default class SignUpForm extends Component {
     const focusedField = e.target.name;
     const focusedFieldIndex = fields.indexOf(focusedField);
 
-    let clearErrors = {};
-    for (let i = 0; i < fields.length; i++) {
-      const field = fields[i];
-      const fieldError = field + "Error";
-      clearErrors[fieldError] = "";
-    }
-
-    this.setState(
-      {
-        errors: clearErrors
-      },
-      () => {
-        let newErrors = Object.assign({}, errors);
-        for (let i = 0; i < focusedFieldIndex; i++) {
-          const formField = fields[i];
-          if (user[formField] === "") {
-            const formFieldError = formField + "Error";
-            const errorMessage = fieldDetails[i].requiredErrorMessage;
-            newErrors[formFieldError] = errorMessage;
-          }
-        }
-        this.setState({
-          errors: newErrors
-        });
+    let newErrors = Object.assign({}, errors);
+    for (let i = 0; i < focusedFieldIndex; i++) {
+      const formField = fields[i];
+      if (user[formField] === "") {
+        const formFieldError = formField + "Error";
+        const errorMessage = fieldDetails[i].requiredErrorMessage;
+        newErrors[formFieldError] = errorMessage;
       }
-    );
+    }
+    this.setState({
+      errors: newErrors
+    });
   };
 
   handleChange = e => {
     const formField = e.target.name;
     const formFieldError = formField + "Error";
+
     this.setState(
       {
         user: {
@@ -128,27 +119,107 @@ export default class SignUpForm extends Component {
         }
       },
       () => {
-        console.log(this.state.user);
+        const { user, fields, fieldDetails, submitAttempted } = this.state;
+        const { password, confirmPassword } = user;
+
+        let submitDisabled = false;
+        let passwordError = "";
+        let confirmPasswordError = "";
+
+        for (let key in user) {
+          if (user[key] === "") {
+            submitDisabled = true;
+          }
+        }
+
+        if (password && confirmPassword && password !== confirmPassword) {
+          submitDisabled = true;
+          if (submitAttempted) {
+            const passwordIndex = fields.indexOf("password");
+            const confirmPasswordIndex = fields.indexOf("confirmPassword");
+            const passwordMatchErrorMessage =
+              fieldDetails[passwordIndex].passwordMatchErrorMessage;
+            const confirmPasswordMatchMessage =
+              fieldDetails[confirmPasswordIndex].passwordMatchErrorMessage;
+
+            passwordError = passwordMatchErrorMessage;
+            confirmPasswordError = confirmPasswordMatchMessage;
+          }
+        }
+
+        this.setState({
+          submitDisabled: submitDisabled,
+          errors: {
+            ...this.state.errors,
+            passwordError: passwordError,
+            confirmPasswordError: confirmPasswordError
+          }
+        });
       }
     );
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    console.log("Button Clicked");
-    const user = {
-      name: this.state.name,
-      country: this.state.country
-    };
+    this.setState(
+      {
+        submitAttempted: true
+      },
+      () => {
+        const {
+          submitDisabled,
+          fields,
+          fieldDetails,
+          errors,
+          user
+        } = this.state;
+
+        if (submitDisabled) {
+          let newErrors = Object.assign({}, errors);
+          for (let i = 0; i < fields.length; i++) {
+            const formField = fields[i];
+            if (user[formField] === "") {
+              const formFieldError = formField + "Error";
+              const errorMessage = fieldDetails[i].requiredErrorMessage;
+              newErrors[formFieldError] = errorMessage;
+            }
+          }
+
+          const { password, confirmPassword } = user;
+          let passwordError = "";
+          let confirmPasswordError = "";
+
+          if (password !== confirmPassword) {
+            const passwordIndex = fields.indexOf("password");
+            const confirmPasswordIndex = fields.indexOf("confirmPassword");
+            const passwordMatchErrorMessage =
+              fieldDetails[passwordIndex].passwordMatchErrorMessage;
+            const confirmPasswordMatchMessage =
+              fieldDetails[confirmPasswordIndex].passwordMatchErrorMessage;
+            passwordError = passwordMatchErrorMessage;
+            confirmPasswordError = confirmPasswordMatchMessage;
+
+            newErrors["passwordError"] = passwordError;
+            newErrors["confirmPasswordError"] = confirmPasswordError;
+          }
+
+          this.setState({
+            errors: newErrors
+          });
+        } else {
+          api.user.signUp(user);
+        }
+      }
+    );
   };
 
   render() {
-    const { fields, fieldDetails, user, errors } = this.state;
+    const { fields, fieldDetails, user, errors, submitDisabled } = this.state;
 
-    let formBodyJSX = fieldDetails.map(field => {
+    const formBodyJSX = fieldDetails.map((field, index) => {
       const { fieldName, label, type, placeholderMessage } = field;
       return (
-        <div className="SignUpForm-input-group">
+        <div key={index} className="SignUpForm-input-group">
           <label className="SignUpForm-label" htmlFor={fieldName}>
             {label}
           </label>
@@ -175,7 +246,14 @@ export default class SignUpForm extends Component {
           <div className="SignUpForm-body">
             <form className="SignUpForm" onSubmit={this.handleSubmit}>
               {formBodyJSX}
-              <button type="submit" className="SignUpForm-button">
+              <button
+                type="submit"
+                className={
+                  submitDisabled
+                    ? "SignUpForm-button button-disabled"
+                    : "SignUpForm-button"
+                }
+              >
                 Sign Up
               </button>
             </form>
